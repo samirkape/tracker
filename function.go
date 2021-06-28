@@ -149,7 +149,7 @@ func FilterDist(data SlotInfo) {
 		SentOnce = false
 	} else {
 		for _, session := range data.Sessions {
-			c := session.AvailableCapacityDose2 > 0 && session.MinAgeLimit == 18
+			c := session.AvailableCapacityDose1 > 0 && session.MinAgeLimit == 18
 			if c {
 				msg := CreateMessage(session)
 				go SendMessage(msg)
