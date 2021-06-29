@@ -34,7 +34,7 @@ func slotInfoProc() error {
 	if err != nil {
 		return fmt.Errorf(gsi_err, err)
 	}
-	log.Println("query building successful %s", url)
+	log.Printf("query building successful %s\n", url)
 	data, err := fetchURL(url) // http get on cowin api + decode json
 	if err != nil {
 		return fmt.Errorf(gsi_err, err)
@@ -149,13 +149,12 @@ func buildQuery() (string, error) {
 func createMessage(data DistSessions) string {
 	msg := []string{"Name: %s\n",
 		"Pincode: %d\n",
-		"FeeType: %s\n",
+		"Fee Type: %s\n",
 		"Fee: %s\n",
 		"Date: %s\n",
-		"AvailableCapacityDose1: %d\n",
-		"AvailableCapacityDose2: %d\n",
-		"MinAgeLimit: %d\n",
-		"Vaccine: %s\n"}
+		"Dose1 Available Capacity: *%d*\n",
+		"Age Limit: %d\n",
+		"Vaccine: *%s*\n"}
 	var BuildSlot strings.Builder
 	BuildSlot.WriteString(fmt.Sprintf(msg[0], data.Name))
 	BuildSlot.WriteString(fmt.Sprintf(msg[2], data.Pincode))
@@ -165,7 +164,6 @@ func createMessage(data DistSessions) string {
 	}
 	BuildSlot.WriteString(fmt.Sprintf(msg[5], data.Date))
 	BuildSlot.WriteString(fmt.Sprintf(msg[7], data.AvailableCapacityDose1))
-	BuildSlot.WriteString(fmt.Sprintf(msg[8], data.AvailableCapacityDose2))
 	BuildSlot.WriteString(fmt.Sprintf(msg[9], data.MinAgeLimit))
 	BuildSlot.WriteString(fmt.Sprintf(msg[10], data.Vaccine))
 	return BuildSlot.String()
