@@ -29,7 +29,6 @@ func Track() {
 			go filterData(data) // discard unnecessary data
 		}
 		time.Sleep(time.Duration(WaitTime)) // follow 100 requests per 5 minutes limit by cowin.gov
-		
 	}
 }
 
