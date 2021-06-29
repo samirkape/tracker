@@ -17,35 +17,38 @@ import (
 // driver function
 func Track() {
 	for {
-		err := slotInfoProc()
+		data, err := slotInfoProc()
 		if err != nil {
 			fmt.Println(err)
+			time.Sleep(time.Duration(WaitTime)) // follow 100 requests per 5 minutes limit by cowin.gov
+			continue
 		}
-		time.Sleep(time.Duration(WaitTime)) // follow 100 requests per 5 minutes limit by cowin.gov
+		if reflect.ValueOf(data).IsZero() {
+			log.Printf("no vaccines available for %s", getDate())
+			time.Sleep(time.Duration(WaitTime)) // follow 100 requests per 5 minutes limit by cowin.gov
+		} else {
+			go filterData(data) // discard unnecessary data
+			time.Sleep(time.Duration(WaitTime)) // follow 100 requests per 5 minutes limit by cowin.gov
+		}
 	}
 }
 
 // 1. Construct and parse url
 // 2. Fetch by http.Get + response JSON decode
 // 3. Sending msg to bot on meeting certain conditions
-func slotInfoProc() error {
+func slotInfoProc() (SlotInfo, error) {
 	gsi_err := "slotInfoProc: failed to get vaccine info %v"
 	url, err := buildQuery() // parse url
 	if err != nil {
-		return fmt.Errorf(gsi_err, err)
+		return SlotInfo{}, fmt.Errorf(gsi_err, err)
 	}
 	log.Printf("query building successful %s\n", url)
 	data, err := fetchURL(url) // http get on cowin api + decode json
 	if err != nil {
-		return fmt.Errorf(gsi_err, err)
+		return SlotInfo{}, fmt.Errorf(gsi_err, err)
 	}
 	log.Println("http get and response decode successful")
-	if reflect.ValueOf(data).IsZero() {
-		return fmt.Errorf("no vaccines available for %s", getDate())
-	} else {
-		go filterData(data) // discard unnecessary data
-	}
-	return nil
+	return data, nil
 }
 
 func filterData(data SlotInfo) {
@@ -56,8 +59,8 @@ func filterData(data SlotInfo) {
 		for _, session := range data.Sessions {
 			// Poll for Dose1 and for age below 45
 			if session.AvailableCapacityDose1 > 1 && session.MinAgeLimit == 18 {
-				if SentOnce && session.FeeType == "Paid" {
-					return
+				if session.FeeType == "Paid" && session.AvailableCapacityDose1 > 50 {
+					continue
 				}
 				msg := createMessage(session)
 				SendMessage(msg, MYID)
@@ -127,8 +130,6 @@ func getDate() string {
 	year, month, day := time.Now().Date()
 	if Date != -1 {
 		day = Date
-	} else {
-		day++
 	}
 	return fmt.Sprintf(strconv.Itoa(day) + "-" + strconv.Itoa(int(month)) + "-" + strconv.Itoa(year))
 }
