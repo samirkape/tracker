@@ -25,11 +25,11 @@ func Track() {
 		}
 		if reflect.ValueOf(data).IsZero() {
 			log.Printf("no vaccines available for %s", getDate())
-			time.Sleep(time.Duration(WaitTime)) // follow 100 requests per 5 minutes limit by cowin.gov
 		} else {
 			go filterData(data) // discard unnecessary data
-			time.Sleep(time.Duration(WaitTime)) // follow 100 requests per 5 minutes limit by cowin.gov
 		}
+		time.Sleep(time.Duration(WaitTime)) // follow 100 requests per 5 minutes limit by cowin.gov
+		
 	}
 }
 
