@@ -43,7 +43,7 @@ func slotInfoProc() error {
 	if reflect.ValueOf(data).IsZero() {
 		return fmt.Errorf("no vaccines available for %s", getDate())
 	} else {
-		filterData(data) // discard unnecessary data
+		go filterData(data) // discard unnecessary data
 	}
 	return nil
 }
@@ -56,6 +56,9 @@ func filterData(data SlotInfo) {
 		for _, session := range data.Sessions {
 			// Poll for Dose1 and for age below 45
 			if session.AvailableCapacityDose1 > 1 && session.MinAgeLimit == 18 {
+				if SentOnce && session.FeeType == "Paid" {
+					return
+				}
 				msg := createMessage(session)
 				SendMessage(msg, MYID)
 				SentOnce = true
