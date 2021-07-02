@@ -168,7 +168,7 @@ func buildQuery() (string, error) {
 	base.Path += URLPATH
 	params := url.Values{}
 	params.Add(DATEQUERY, date)
-	params.Add(DISTQUERY, DISTID)
+	params.Add(PINQUERY, PINCODE)
 	base.RawQuery = params.Encode()
 	url := base.String()
 	return url, nil
