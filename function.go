@@ -71,10 +71,6 @@ func filterData(data SlotInfo, db *buntdb.DB) {
 	for _, session := range data.Sessions {
 		// Poll for Dose1 and for age below 45
 		if session.AvailableCapacityDose1 > 1 && session.MinAgeLimit == 18 {
-			if session.FeeType == "Paid" && session.AvailableCapacityDose1 > 50 {
-				continue
-			}
-
 			err := db.View(func(tx *buntdb.Tx) error {
 				val, err := tx.Get(session.Name)
 				if err != nil {
@@ -85,10 +81,17 @@ func filterData(data SlotInfo, db *buntdb.DB) {
 			})
 
 			if err == buntdb.ErrNotFound {
-				db.Update(func(tx *buntdb.Tx) error {
-					tx.Set(session.Name, "", &buntdb.SetOptions{Expires: true, TTL: time.Second * MessageTimeout})
-					return nil
-				})
+				if session.FeeType == "Paid" {
+					db.Update(func(tx *buntdb.Tx) error {
+						tx.Set(session.Name, "", &buntdb.SetOptions{Expires: true, TTL: time.Hour * MessageTimeout})
+						return nil
+					})
+				} else {
+					db.Update(func(tx *buntdb.Tx) error {
+						tx.Set(session.Name, "", &buntdb.SetOptions{Expires: true, TTL: time.Second * MessageTimeout})
+						return nil
+					})
+				}
 				msg := createMessage(session)
 				SendMessage(msg, MYID)
 			}
