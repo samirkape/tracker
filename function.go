@@ -152,20 +152,27 @@ func dummyJson() *bytes.Reader {
 // date needed for query
 func getDate() string {
 	year, month, day := time.Now().Date()
+	t := time.Now()
+	h := t.Hour()
 	if Date != -1 {
 		day = Date
+	}
+	if h > 15 {
+		day++
 	}
 	return fmt.Sprintf(strconv.Itoa(day) + "-" + strconv.Itoa(int(month)) + "-" + strconv.Itoa(year))
 }
 
 // form query by paramters
 func buildQuery() (string, error) {
+	date := getDate()
 	base, err := url.Parse(URL)
 	if err != nil {
 		return "", fmt.Errorf("buildquery: unable to parse url: %v", err)
 	}
 	base.Path += URLPATH
 	params := url.Values{}
+	params.Add(DATEQUERY, date)
 	params.Add(DISTQUERY, DISTID)
 	base.RawQuery = params.Encode()
 	url := base.String()
