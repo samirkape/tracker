@@ -201,6 +201,6 @@ func createMessage(data DistSessions) string {
 	BuildSlot.WriteString(fmt.Sprintf(msg[5], data.AvailableCapacityDose1))
 	BuildSlot.WriteString(fmt.Sprintf(msg[6], data.MinAgeLimit))
 	BuildSlot.WriteString(fmt.Sprintf(msg[7], data.Vaccine))
-	BuildSlot.WriteString(fmt.Sprintf(msg[8], data.Vaccine))
+	BuildSlot.WriteString(msg[8])
 	return BuildSlot.String()
 }
