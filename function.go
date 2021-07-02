@@ -12,10 +12,14 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/tidwall/buntdb"
 )
 
 // driver function
 func Track() {
+	db := getDB()
+	defer db.Close()
 	for {
 		data, err := slotInfoProc()
 		if err != nil {
@@ -26,10 +30,23 @@ func Track() {
 		if reflect.ValueOf(data).IsZero() {
 			log.Printf("no vaccines available for %s", getDate())
 		} else {
-			go filterData(data) // discard unnecessary data
+			go filterData(data, db) // discard unnecessary data
 		}
 		time.Sleep(time.Duration(WaitTime)) // follow 100 requests per 5 minutes limit by cowin.gov
 	}
+}
+
+func sender(session DistSessions) {
+	msg := createMessage(session)
+	SendMessage(msg, MYID)
+}
+
+func getDB() *buntdb.DB {
+	db, err := buntdb.Open(":memory:")
+	if err != nil {
+		log.Fatal(err)
+	}
+	return db
 }
 
 // 1. Construct and parse url
@@ -50,20 +67,30 @@ func slotInfoProc() (SlotInfo, error) {
 	return data, nil
 }
 
-func filterData(data SlotInfo) {
-	if SentOnce {
-		time.Sleep(20 * time.Second)
-		SentOnce = false
-	} else {
-		for _, session := range data.Sessions {
-			// Poll for Dose1 and for age below 45
-			if session.AvailableCapacityDose1 > 1 && session.MinAgeLimit == 18 {
-				if session.FeeType == "Paid" && session.AvailableCapacityDose1 > 50 {
-					continue
+func filterData(data SlotInfo, db *buntdb.DB) {
+	for _, session := range data.Sessions {
+		// Poll for Dose1 and for age below 45
+		if session.AvailableCapacityDose1 > 1 && session.MinAgeLimit == 18 {
+			if session.FeeType == "Paid" && session.AvailableCapacityDose1 > 50 {
+				continue
+			}
+
+			err := db.View(func(tx *buntdb.Tx) error {
+				val, err := tx.Get(session.Name)
+				if err != nil {
+					return err
 				}
+				log.Println("key is already there, wait for 20 sec to send the message %s\n", val)
+				return nil
+			})
+
+			if err == buntdb.ErrNotFound {
+				db.Update(func(tx *buntdb.Tx) error {
+					tx.Set(session.Name, "", &buntdb.SetOptions{Expires: true, TTL: time.Second * 20})
+					return nil
+				})
 				msg := createMessage(session)
 				SendMessage(msg, MYID)
-				SentOnce = true
 			}
 		}
 	}
