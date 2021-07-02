@@ -22,7 +22,7 @@ func init() {
 }
 
 const (
-	MYID           = -1001526370088
+	MYID           = -1001481708291
 	DEBUGID        = 1346530914
 	GROUPID        = -557832891
 	URL            = "https://cdn-api.co-vin.in/"
