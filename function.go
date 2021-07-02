@@ -65,7 +65,7 @@ func slotInfoProc() (SlotInfo, error) {
 func filterData(data SlotInfo, db *buntdb.DB) {
 	for _, session := range data.Sessions {
 		// Poll for Dose1 and for age below 45
-		if session.AvailableCapacityDose1 > 1 && session.MinAgeLimit == 18 {
+		if session.AvailableCapacityDose1 > 1 || session.AvailableCapacityDose2 > 1 {
 			err := db.View(func(tx *buntdb.Tx) error {
 				val, err := tx.Get(session.Name)
 				if err != nil {
