@@ -22,7 +22,8 @@ func init() {
 }
 
 const (
-	MYID           = 1346530914
+	MYID	       = -1001526370088
+	DEBUGID        = 1346530914
 	GROUPID        = -557832891
 	URL            = "https://cdn-api.co-vin.in/"
 	URLPATH        = "api/v2/appointment/sessions/public/findByDistrict"
