@@ -25,7 +25,10 @@ func getTBot() (*tgbotapi.BotAPI, error) {
 
 // sends message to registered id
 func SendMessage(Info string, userid int64) error {
+	link := "https://selfregistration.cowin.gov.in"
 	msg := tgbotapi.NewMessage(userid, Info)
+	btn := tgbotapi.NewInlineKeyboardButtonURL("Book Vaccine", link)
+	msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup([]tgbotapi.InlineKeyboardButton{btn})
 	//msg1 := tgbotapi.NewMessage(GROUPID, Info)
 	msg.ParseMode = "markdown"
 	_, err := Bot.Send(msg)
