@@ -26,11 +26,9 @@ func getTBot() (*tgbotapi.BotAPI, error) {
 // sends message to registered id
 func SendMessage(Info string, userid int64) error {
 	msg := tgbotapi.NewMessage(userid, Info)
-	url := tgbotapi.NewMessage(userid, "https://selfregistration.cowin.gov.in")
 	//msg1 := tgbotapi.NewMessage(GROUPID, Info)
 	msg.ParseMode = "markdown"
 	_, err := Bot.Send(msg)
-	Bot.Send(url)
 	//_, err = bot.Send(msg1)
 	if err != nil {
 		return fmt.Errorf("sendmessage: message sending failed: %v", err)

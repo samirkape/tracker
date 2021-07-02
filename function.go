@@ -188,7 +188,8 @@ func createMessage(data DistSessions) string {
 		"Date: %s\n",
 		"Dose1 Available Capacity: *%d*\n",
 		"Age Limit: %d\n",
-		"Vaccine: *%s*\n"}
+		"Vaccine: *%s*\n",
+		"https://selfregistration.cowin.gov.in"}
 	var BuildSlot strings.Builder
 	BuildSlot.WriteString(fmt.Sprintf(msg[0], data.Name))
 	BuildSlot.WriteString(fmt.Sprintf(msg[1], data.Pincode))
@@ -200,5 +201,6 @@ func createMessage(data DistSessions) string {
 	BuildSlot.WriteString(fmt.Sprintf(msg[5], data.AvailableCapacityDose1))
 	BuildSlot.WriteString(fmt.Sprintf(msg[6], data.MinAgeLimit))
 	BuildSlot.WriteString(fmt.Sprintf(msg[7], data.Vaccine))
+	BuildSlot.WriteString(fmt.Sprintf(msg[8], data.Vaccine))
 	return BuildSlot.String()
 }
