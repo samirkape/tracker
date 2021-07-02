@@ -86,7 +86,7 @@ func filterData(data SlotInfo, db *buntdb.DB) {
 
 			if err == buntdb.ErrNotFound {
 				db.Update(func(tx *buntdb.Tx) error {
-					tx.Set(session.Name, "", &buntdb.SetOptions{Expires: true, TTL: time.Second * 20})
+					tx.Set(session.Name, "", &buntdb.SetOptions{Expires: true, TTL: time.Second * MessageTimeout})
 					return nil
 				})
 				msg := createMessage(session)
