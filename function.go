@@ -37,7 +37,7 @@ func Track() {
 }
 
 func getDB() *buntdb.DB {
-	db, err := buntdb.Open(":memory:")
+	db, err := buntdb.Open("msg.db")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -67,11 +67,11 @@ func filterData(data SlotInfo, db *buntdb.DB) {
 		// Poll for Dose1 and for age below 45
 		if session.AvailableCapacityDose1 > 1 && session.MinAgeLimit == 18 {
 			err := db.View(func(tx *buntdb.Tx) error {
-				val, err := tx.Get(session.Name)
+				_, err := tx.Get(session.Name)
 				if err != nil {
 					return err
 				}
-				log.Println("key is already there, wait for 20 sec to send the message %s\n", val)
+				log.Printf("key is already there, waiting for timeout to complete\n")
 				return nil
 			})
 
