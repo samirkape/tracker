@@ -96,14 +96,7 @@ func init() {
 var BotToken = os.Getenv("TOKEN")
 var FinalMsg map[string]map[string]string
 
-var (
-	StopFlag = false
-	SkipFlag = false
-	Date     = -1
-	SentOnce = false
-)
-
-type SlotInfo struct {
+SlotInfo struct {
 	Sessions []DistSessions `json:"sessions"`
 }
 
