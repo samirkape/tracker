@@ -16,7 +16,6 @@ func getTBot() (*tgbotapi.BotAPI, error) {
 		return nil, errors.New("getTBot: could not find bot token")
 	}
 	bot, err := tgbotapi.NewBotAPI(BotToken)
-	//bot.Debug = true
 	if err != nil {
 		return nil, fmt.Errorf("getTBot: error initializing bot: %v", err)
 	}
@@ -29,13 +28,10 @@ func SendMessage(Info string, userid int64) error {
 	msg := tgbotapi.NewMessage(userid, Info)
 	btn := tgbotapi.NewInlineKeyboardButtonURL("Book Vaccine", link)
 	msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup([]tgbotapi.InlineKeyboardButton{btn})
-	//msg1 := tgbotapi.NewMessage(GROUPID, Info)
 	msg.ParseMode = "markdown"
 	_, err := Bot.Send(msg)
-	//_, err = bot.Send(msg1)
 	if err != nil {
 		return fmt.Errorf("sendmessage: message sending failed: %v", err)
 	}
-	time.Sleep(30 * time.Second)
 	return nil
 }
