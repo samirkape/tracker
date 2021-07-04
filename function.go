@@ -83,7 +83,7 @@ func filterData(data SlotInfo, db *buntdb.DB) {
 					})
 				} else {
 					db.Update(func(tx *buntdb.Tx) error {
-						tx.Set(session.Name, "", &buntdb.SetOptions{Expires: true, TTL: time.Second * MessageTimeout})
+						tx.Set(session.Name, "", &buntdb.SetOptions{Expires: true, TTL: time.Minute * 2})
 						return nil
 					})
 				}
@@ -154,6 +154,10 @@ func getDate() string {
 	year, month, day := time.Now().Date()
 	if Date != -1 {
 		day = Date
+	}
+	t := time.Now()
+	if t.Hour() > 15 {
+		day++
 	}
 	return fmt.Sprintf(strconv.Itoa(day) + "-" + strconv.Itoa(int(month)) + "-" + strconv.Itoa(year))
 }
