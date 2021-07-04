@@ -37,7 +37,7 @@ func Track() {
 }
 
 func getDB() *buntdb.DB {
-	db, err := buntdb.Open(":memory:")
+	db, err := buntdb.Open("filter.db")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -183,7 +183,9 @@ func createMessage(data DistSessions) string {
 		"Date: %s\n",
 		"Dose1 Available Capacity: *%d*\n",
 		"Age Limit: %d\n",
-		"Vaccine: *%s*\n"}
+		"Vaccine: *%s*\n",
+		"Dose2 Available Capacity: *%d*\n",
+	}
 	var BuildSlot strings.Builder
 	BuildSlot.WriteString(fmt.Sprintf(msg[0], data.Name))
 	BuildSlot.WriteString(fmt.Sprintf(msg[1], data.Pincode))
@@ -193,6 +195,9 @@ func createMessage(data DistSessions) string {
 	}
 	BuildSlot.WriteString(fmt.Sprintf(msg[4], data.Date))
 	BuildSlot.WriteString(fmt.Sprintf(msg[5], data.AvailableCapacityDose1))
+	if data.AvailableCapacityDose2 > 0 {
+		BuildSlot.WriteString(fmt.Sprintf(msg[8], data.AvailableCapacityDose2))
+	}
 	BuildSlot.WriteString(fmt.Sprintf(msg[6], data.MinAgeLimit))
 	BuildSlot.WriteString(fmt.Sprintf(msg[7], data.Vaccine))
 	return BuildSlot.String()
