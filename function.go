@@ -199,12 +199,12 @@ func createMessage(data DistSessions) string {
 	}
 	BuildSlot.WriteString(fmt.Sprintf(msg[4], data.Date))
 	BuildSlot.WriteString(fmt.Sprintf(msg[6], data.MinAgeLimit))
+	BuildSlot.WriteString(fmt.Sprintf(msg[7], data.Vaccine))
 
 	BuildSlot.WriteString("\n")
 	BuildSlot.WriteString(fmt.Sprintf(msg[5], data.AvailableCapacityDose1))
 	if data.AvailableCapacityDose2 > 1 {
 		BuildSlot.WriteString(fmt.Sprintf(msg[8], data.AvailableCapacityDose2))
 	}
-	BuildSlot.WriteString(fmt.Sprintf(msg[7], data.Vaccine))
 	return BuildSlot.String()
 }
