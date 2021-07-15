@@ -180,15 +180,15 @@ func buildQuery() (string, error) {
 
 func createMessage(data DistSessions) string {
 	msg := []string{
-		"Name: %s\n",
-		"Pincode: %d\n",
-		"Type: %s\n",
-		"Fee: %s\n",
-		"Date: %s\n",
-		"Dose1: *%d*\n",
-		"Age Limit: %d\n",
-		"Vaccine: *%s*\n",
-		"Dose2: *%d*",
+		"Name:  %s\n",
+		"Pincode:  %d\n",
+		"Type:  %s\n",
+		"Fee:  %s\n",
+		"Date:  %s\n",
+		"Dose1:  *%d*\n",
+		"Age Limit:  %d\n",
+		"Vaccine:  *%s*\n",
+		"Dose2:  *%d*\n",
 	}
 	var BuildSlot strings.Builder
 	BuildSlot.WriteString(fmt.Sprintf(msg[0], data.Name))
