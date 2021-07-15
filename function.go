@@ -182,13 +182,13 @@ func createMessage(data DistSessions) string {
 	msg := []string{
 		"Name: %s\n",
 		"Pincode: %d\n",
-		"Fee Type: %s\n",
+		"Type: %s\n",
 		"Fee: %s\n",
 		"Date: %s\n",
-		"Dose1 Available Capacity: *%d*\n",
+		"Dose1: *%d*\n",
 		"Age Limit: %d\n",
 		"Vaccine: *%s*\n",
-		"Dose2 Available Capacity: *%d*\n",
+		"Dose2: *%d*",
 	}
 	var BuildSlot strings.Builder
 	BuildSlot.WriteString(fmt.Sprintf(msg[0], data.Name))
@@ -198,11 +198,13 @@ func createMessage(data DistSessions) string {
 		BuildSlot.WriteString(fmt.Sprintf(msg[3], data.Fee))
 	}
 	BuildSlot.WriteString(fmt.Sprintf(msg[4], data.Date))
+	BuildSlot.WriteString(fmt.Sprintf(msg[6], data.MinAgeLimit))
+
+	BuildSlot.WriteString("\n")
 	BuildSlot.WriteString(fmt.Sprintf(msg[5], data.AvailableCapacityDose1))
-	if data.AvailableCapacityDose2 > 0 {
+	if data.AvailableCapacityDose2 > 1 {
 		BuildSlot.WriteString(fmt.Sprintf(msg[8], data.AvailableCapacityDose2))
 	}
-	BuildSlot.WriteString(fmt.Sprintf(msg[6], data.MinAgeLimit))
 	BuildSlot.WriteString(fmt.Sprintf(msg[7], data.Vaccine))
 	return BuildSlot.String()
 }
