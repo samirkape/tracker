@@ -180,7 +180,7 @@ func createMessage(data DistSessions) string {
 	msg := []string{
 		"Name: %s\n",
 		"Pincode: %d\n",
-		"Cost: %s\n",
+		"Type: %s\n",
 		"Fee: %s\n",
 		"Date: %s\n",
 		"Dose1: *%d*\n",
