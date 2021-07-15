@@ -65,7 +65,7 @@ func slotInfoProc() (SlotInfo, error) {
 func filterData(data SlotInfo, db *buntdb.DB) {
 	for _, session := range data.Sessions {
 		// Poll for Dose1 and for age below 45
-		if session.AvailableCapacityDose1 > 1 && session.MinAgeLimit == 18 {
+		if (session.AvailableCapacityDose1 > 1 || session.AvailableCapacityDose2 > 1) && session.MinAgeLimit == 18 {
 			err := db.View(func(tx *buntdb.Tx) error {
 				_, err := tx.Get(session.Name)
 				if err != nil {
@@ -154,9 +154,6 @@ func getDate() string {
 	year, month, day := time.Now().Date()
 	t := time.Now()
 	h := t.Hour()
-	if Date != -1 {
-		day = Date
-	}
 	if h > 15 {
 		day++
 	}
@@ -183,12 +180,14 @@ func createMessage(data DistSessions) string {
 	msg := []string{
 		"Name: %s\n",
 		"Pincode: %d\n",
-		"Fee Type: %s\n",
+		"Cost: %s\n",
 		"Fee: %s\n",
 		"Date: %s\n",
-		"Dose1 Available Capacity: *%d*\n",
+		"Dose1 : *%d*\n",
 		"Age Limit: %d\n",
-		"Vaccine: *%s*\n"}
+		"Vaccine: *%s*\n",
+		"Dose2: *%d*",
+	}
 	var BuildSlot strings.Builder
 	BuildSlot.WriteString(fmt.Sprintf(msg[0], data.Name))
 	BuildSlot.WriteString(fmt.Sprintf(msg[1], data.Pincode))
@@ -197,8 +196,13 @@ func createMessage(data DistSessions) string {
 		BuildSlot.WriteString(fmt.Sprintf(msg[3], data.Fee))
 	}
 	BuildSlot.WriteString(fmt.Sprintf(msg[4], data.Date))
-	BuildSlot.WriteString(fmt.Sprintf(msg[5], data.AvailableCapacityDose1))
 	BuildSlot.WriteString(fmt.Sprintf(msg[6], data.MinAgeLimit))
 	BuildSlot.WriteString(fmt.Sprintf(msg[7], data.Vaccine))
+
+	BuildSlot.WriteString("\n")
+	BuildSlot.WriteString(fmt.Sprintf(msg[5], data.AvailableCapacityDose1))
+	if data.AvailableCapacityDose2 > 1 {
+		BuildSlot.WriteString(fmt.Sprintf(msg[8], data.AvailableCapacityDose2))
+	}
 	return BuildSlot.String()
 }

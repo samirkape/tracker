@@ -22,7 +22,7 @@ func init() {
 }
 
 const (
-	MYID	       = -1001526370088
+	MYID           = -1001526370088
 	DEBUGID        = 1346530914
 	GROUPID        = -557832891
 	URL            = "https://cdn-api.co-vin.in/"
@@ -96,7 +96,7 @@ func init() {
 var BotToken = os.Getenv("TOKEN")
 var FinalMsg map[string]map[string]string
 
-SlotInfo struct {
+type SlotInfo struct {
 	Sessions []DistSessions `json:"sessions"`
 }
 
