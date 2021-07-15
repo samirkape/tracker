@@ -186,7 +186,7 @@ func createMessage(data DistSessions) string {
 		"Dose1: *%d*\n",
 		"Age Limit: %d\n",
 		"Vaccine: *%s*\n",
-		"Dose2: *%d*",
+		"Dose2: *%d*\n",
 	}
 	var BuildSlot strings.Builder
 	BuildSlot.WriteString(fmt.Sprintf(msg[0], data.Name))
