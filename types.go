@@ -6,7 +6,6 @@ import (
 	"os"
 	"time"
 
-	env "github.com/caarlos0/env/v6"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
@@ -19,7 +18,15 @@ func init() {
 	if err != nil {
 		fmt.Println("bot initialization failed")
 	}
+	SentCount = make(map[string]int)
 }
+
+// func init() {
+// 	cfg := BotConfig{}
+// 	if err := env.Parse(&cfg); err != nil {
+// 		fmt.Printf("%+v\n", err)
+// 	}
+// }
 
 const (
 	MYID           = -1001526370088
@@ -86,15 +93,9 @@ type BotConfig struct {
 	Token string `env:"TOKEN"`
 }
 
-func init() {
-	cfg := BotConfig{}
-	if err := env.Parse(&cfg); err != nil {
-		fmt.Printf("%+v\n", err)
-	}
-}
-
 var BotToken = os.Getenv("TOKEN")
 var FinalMsg map[string]map[string]string
+var SentCount map[string]int
 
 type SlotInfo struct {
 	Sessions []DistSessions `json:"sessions"`

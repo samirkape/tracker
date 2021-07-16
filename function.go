@@ -63,6 +63,7 @@ func slotInfoProc() (SlotInfo, error) {
 }
 
 func filterData(data SlotInfo, db *buntdb.DB) {
+	flushSentCount()
 	for _, session := range data.Sessions {
 		// Poll for Dose1 and for age below 45
 		if (session.AvailableCapacityDose1 > 1 || session.AvailableCapacityDose2 > 1) && session.MinAgeLimit == 18 {
@@ -75,7 +76,8 @@ func filterData(data SlotInfo, db *buntdb.DB) {
 				return nil
 			})
 
-			if err == buntdb.ErrNotFound {
+			if err == buntdb.ErrNotFound && SentCount[session.Name] < 3 {
+				SentCount[session.Name]++
 				if session.FeeType == "Paid" {
 					db.Update(func(tx *buntdb.Tx) error {
 						tx.Set(session.Name, "", &buntdb.SetOptions{Expires: true, TTL: time.Hour * MessageTimeout})
@@ -147,6 +149,16 @@ func dummyJson() *bytes.Reader {
 	input := []byte(`{"centers": [{"center_id": 116271, "name": "Sanvatsar PHC", "address": "Sanvatsar", "state_name": "Maharashtra", "district_name": "Ahmednagar", "block_name": "Kopargaon", "pincode": 423601, "lat": 19, "long": 74, "from": "09:00:00", "to": "17:00:00", "fee_type": "Free", "sessions": [{"session_id": "ab670e27-4e05-487b-b282-bde3a8904061", "date": "08-05-2021", "available_capacity": 0, "min_age_limit": 45, "vaccine": "COVISHIELD", "slots": ["09:00AM-11:00AM", "11:00AM-01:00PM", "01:00PM-03:00PM", "03:00PM-05:00PM"]}]}]}`)
 	r := bytes.NewReader(input)
 	return r
+}
+
+func flushSentCount() {
+	t := time.Now()
+	h := t.Hour()
+	if h > 23 {
+		for k := range SentCount {
+			delete(SentCount, k)
+		}
+	}
 }
 
 // date needed for query
