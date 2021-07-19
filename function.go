@@ -71,7 +71,7 @@ func filterData(data SlotInfo, db *buntdb.DB) {
 				if err != nil {
 					return err
 				}
-				log.Println("key is already there, wait for 20 sec to send the message %s\n", val)
+				log.Println("key is already there, wait for timeout to send the message\n", val)
 				return nil
 			})
 
