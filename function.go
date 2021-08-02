@@ -87,7 +87,7 @@ func filterData(data SlotInfo, db *buntdb.DB) {
 						return nil
 					})
 				}
-				msg := createMessage(session)
+				msg := CreateMessage(session)
 				SendMessage(msg, MYID)
 			}
 		}
@@ -178,9 +178,9 @@ func buildQuery() (string, error) {
 	return url, nil
 }
 
-func createMessage(data DistSessions) string {
+func CreateMessage(data DistSessions) string {
 	msg := []string{
-		"Name:  %s\n",
+		"\nName: %s\n",
 		"Pincode:  %d\n",
 		"Type:  %s\n",
 		"Fee:  %s\n",
@@ -189,9 +189,18 @@ func createMessage(data DistSessions) string {
 		"Age Limit:  %d\n",
 		"Vaccine:  *%s*\n",
 		"Dose2:  *%d*\n",
+		"Area:  %s\n",
 	}
 	var BuildSlot strings.Builder
-	BuildSlot.WriteString(fmt.Sprintf(msg[0], data.Name))
+	name := strings.Split(data.Name, " ")
+	if len(name) > 2 {
+		BuildSlot.WriteString(fmt.Sprintf(msg[0], strings.Join(name[:len(name)/2], " ")))
+		BuildSlot.WriteString(strings.Join(name[len(name)/2:], " "))
+		BuildSlot.WriteString("\n\n")
+	} else {
+		BuildSlot.WriteString(fmt.Sprintf(msg[0], data.Name))
+	}
+	BuildSlot.WriteString(fmt.Sprintf(msg[9], data.Address))
 	BuildSlot.WriteString(fmt.Sprintf(msg[1], data.Pincode))
 	BuildSlot.WriteString(fmt.Sprintf(msg[2], data.FeeType))
 	if data.FeeType != "Free" {
