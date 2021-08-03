@@ -179,6 +179,7 @@ func buildQuery() (string, error) {
 }
 
 func CreateMessage(data DistSessions) string {
+
 	msg := []string{
 		"\nName: %s\n",
 		"Pincode:  %d\n",
@@ -191,8 +192,11 @@ func CreateMessage(data DistSessions) string {
 		"Dose2:  *%d*\n",
 		"Area:  %s\n",
 	}
+
 	var BuildSlot strings.Builder
 	name := strings.Split(data.Name, " ")
+	addr := strings.Split(data.Address, " ")
+
 	if len(name) > 2 {
 		BuildSlot.WriteString(fmt.Sprintf(msg[0], strings.Join(name[:len(name)/2], " ")))
 		BuildSlot.WriteString(strings.Join(name[len(name)/2:], " "))
@@ -200,18 +204,28 @@ func CreateMessage(data DistSessions) string {
 	} else {
 		BuildSlot.WriteString(fmt.Sprintf(msg[0], data.Name))
 	}
-	BuildSlot.WriteString(fmt.Sprintf(msg[9], data.Address))
+
+	if len(addr) > int(2) {
+		BuildSlot.WriteString(fmt.Sprintf(msg[9], strings.Join(addr[:len(addr)/2], " ")))
+		BuildSlot.WriteString(strings.Join(addr[len(addr)/2:], " "))
+		BuildSlot.WriteString("\n\n")
+	} else {
+		BuildSlot.WriteString(fmt.Sprintf(msg[9], data.Address))
+	}
+
 	BuildSlot.WriteString(fmt.Sprintf(msg[1], data.Pincode))
 	BuildSlot.WriteString(fmt.Sprintf(msg[2], data.FeeType))
+
 	if data.FeeType != "Free" {
 		BuildSlot.WriteString(fmt.Sprintf(msg[3], data.Fee))
 	}
+
 	BuildSlot.WriteString(fmt.Sprintf(msg[4], data.Date))
 	BuildSlot.WriteString(fmt.Sprintf(msg[6], data.MinAgeLimit))
 	BuildSlot.WriteString(fmt.Sprintf(msg[7], data.Vaccine))
-
 	BuildSlot.WriteString("\n")
 	BuildSlot.WriteString(fmt.Sprintf(msg[5], data.AvailableCapacityDose1))
+
 	if data.AvailableCapacityDose2 > 1 {
 		BuildSlot.WriteString(fmt.Sprintf(msg[8], data.AvailableCapacityDose2))
 	}
