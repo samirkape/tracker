@@ -34,7 +34,7 @@ const (
 	DATEQUERY      = "date"
 	HostAddress    = "8081"
 	WaitTime       = float64((time.Minute * 5) / 100)
-	MessageTimeout = 30
+	MessageTimeout = 78
 )
 
 const (
