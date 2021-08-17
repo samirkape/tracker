@@ -88,7 +88,7 @@ func filterData(data SlotInfo, db *buntdb.DB) {
 					})
 				}
 				t := time.Now()
-				if t.Hour() < 18 && t.Hour() > 8 {
+				if t.Hour() < 18 && t.Hour() > 7 {
 					msg := CreateMessage(session)
 					SendMessage(msg, MYID)
 				}
