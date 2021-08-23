@@ -63,21 +63,19 @@ func slotInfoProc() (SlotInfo, error) {
 }
 
 func filterData(data SlotInfo, db *buntdb.DB) {
-	flushSentCount()
 	for _, session := range data.Sessions {
 		// Poll for Dose1 and for age below 45
-		if (session.AvailableCapacityDose1 > 1 || session.AvailableCapacityDose2 > 1) && session.MinAgeLimit == 18 {
+		if session.AvailableCapacityDose1 > 1 || session.AvailableCapacityDose2 > 1 {
 			err := db.View(func(tx *buntdb.Tx) error {
-				_, err := tx.Get(session.Name)
+				val, err := tx.Get(session.Name)
 				if err != nil {
 					return err
 				}
-				log.Printf("key is already there, waiting for timeout to complete\n")
+				log.Println("key is already there, wait for timeout to send the message\n", val)
 				return nil
 			})
 
-			if err == buntdb.ErrNotFound && SentCount[session.Name] < 3 {
-				SentCount[session.Name]++
+			if err == buntdb.ErrNotFound {
 				if session.FeeType == "Paid" {
 					db.Update(func(tx *buntdb.Tx) error {
 						tx.Set(session.Name, "", &buntdb.SetOptions{Expires: true, TTL: time.Hour * MessageTimeout})
@@ -85,12 +83,15 @@ func filterData(data SlotInfo, db *buntdb.DB) {
 					})
 				} else {
 					db.Update(func(tx *buntdb.Tx) error {
-						tx.Set(session.Name, "", &buntdb.SetOptions{Expires: true, TTL: time.Minute * (MessageTimeout * 2)})
+						tx.Set(session.Name, "", &buntdb.SetOptions{Expires: true, TTL: time.Minute * MessageTimeout})
 						return nil
 					})
 				}
-				msg := createMessage(session)
-				SendMessage(msg, MYID)
+				t := time.Now()
+				if t.Hour() < 18 && t.Hour() > 7 {
+					msg := createMessage(session)
+					SendMessage(msg, MYID)
+				}
 			}
 		}
 	}
@@ -151,22 +152,11 @@ func dummyJson() *bytes.Reader {
 	return r
 }
 
-func flushSentCount() {
-	t := time.Now()
-	h := t.Hour()
-	if h > 23 {
-		for k := range SentCount {
-			delete(SentCount, k)
-		}
-	}
-}
-
 // date needed for query
 func getDate() string {
 	year, month, day := time.Now().Date()
 	t := time.Now()
-	h := t.Hour()
-	if h > 15 {
+	if t.Hour() > 15 {
 		day++
 	}
 	return fmt.Sprintf(strconv.Itoa(day) + "-" + strconv.Itoa(int(month)) + "-" + strconv.Itoa(year))
@@ -190,18 +180,38 @@ func buildQuery() (string, error) {
 
 func createMessage(data DistSessions) string {
 	msg := []string{
-		"Name: %s\n",
-		"Pincode: %d\n",
-		"Type: %s\n",
-		"Fee: %s\n",
-		"Date: %s\n",
-		"Dose1: *%d*\n",
-		"Age Limit: %d\n",
-		"Vaccine: *%s*\n",
-		"Dose2: *%d*\n",
+		"\nName: %s\n",
+		"Pincode:  %d\n",
+		"Type:  %s\n",
+		"Fee:  %s\n",
+		"Date:  %s\n",
+		"Dose1:  *%d*\n",
+		"Age Limit:  %d\n",
+		"Vaccine:  *%s*\n",
+		"Dose2:  *%d*\n",
+		"Area:  %s\n",
 	}
+
 	var BuildSlot strings.Builder
-	BuildSlot.WriteString(fmt.Sprintf(msg[0], data.Name))
+	name := strings.Split(data.Name, " ")
+	addr := strings.Split(data.Address, " ")
+
+	if len(name) > 2 {
+		BuildSlot.WriteString(fmt.Sprintf(msg[0], strings.Join(name[:len(name)/2], " ")))
+		BuildSlot.WriteString(strings.Join(name[len(name)/2:], " "))
+		BuildSlot.WriteString("\n\n")
+	} else {
+		BuildSlot.WriteString(fmt.Sprintf(msg[0], data.Name))
+	}
+
+	if len(addr) > int(2) {
+		BuildSlot.WriteString(fmt.Sprintf(msg[9], strings.Join(addr[:len(addr)/2], " ")))
+		BuildSlot.WriteString(strings.Join(addr[len(addr)/2:], " "))
+		BuildSlot.WriteString("\n\n")
+	} else {
+		BuildSlot.WriteString(fmt.Sprintf(msg[9], data.Address))
+	}
+
 	BuildSlot.WriteString(fmt.Sprintf(msg[1], data.Pincode))
 	BuildSlot.WriteString(fmt.Sprintf(msg[2], data.FeeType))
 	if data.FeeType != "Free" {
