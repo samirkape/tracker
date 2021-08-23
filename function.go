@@ -217,18 +217,17 @@ func CreateMessage(data DistSessions) string {
 	}
 
 	BuildSlot.WriteString(fmt.Sprintf(msg[1], data.Pincode))
-	BuildSlot.WriteString(fmt.Sprintf(msg[2], data.FeeType))
-
-	if data.FeeType != "Free" {
-		BuildSlot.WriteString(fmt.Sprintf(msg[3], data.Fee))
-	}
-
 	BuildSlot.WriteString(fmt.Sprintf(msg[4], data.Date))
 	BuildSlot.WriteString(fmt.Sprintf(msg[6], data.MinAgeLimit))
-	BuildSlot.WriteString(fmt.Sprintf(msg[7], data.Vaccine))
-	BuildSlot.WriteString("\n")
-	BuildSlot.WriteString(fmt.Sprintf(msg[5], data.AvailableCapacityDose1))
 
+	BuildSlot.WriteString("\n")
+	BuildSlot.WriteString(fmt.Sprintf(msg[7], data.Vaccine))
+	if data.FeeType != "Free" {
+		BuildSlot.WriteString(fmt.Sprintf(msg[3], data.Fee))
+	} else {
+		BuildSlot.WriteString(fmt.Sprintf(msg[2], data.FeeType))
+	}
+	BuildSlot.WriteString(fmt.Sprintf(msg[5], data.AvailableCapacityDose1))
 	if data.AvailableCapacityDose2 > 1 {
 		BuildSlot.WriteString(fmt.Sprintf(msg[8], data.AvailableCapacityDose2))
 	}
