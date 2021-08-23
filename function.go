@@ -83,7 +83,7 @@ func filterData(data SlotInfo, db *buntdb.DB) {
 					})
 				} else {
 					db.Update(func(tx *buntdb.Tx) error {
-						tx.Set(session.Name, "", &buntdb.SetOptions{Expires: true, TTL: time.Minute * MessageTimeout})
+						tx.Set(session.Name, "", &buntdb.SetOptions{Expires: true, TTL: time.Hour * MessageTimeout})
 						return nil
 					})
 				}
@@ -202,6 +202,7 @@ func createMessage(data DistSessions) string {
 		BuildSlot.WriteString("\n\n")
 	} else {
 		BuildSlot.WriteString(fmt.Sprintf(msg[0], data.Name))
+		BuildSlot.WriteString("\n")
 	}
 
 	if len(addr) > int(2) {
