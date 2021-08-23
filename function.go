@@ -190,7 +190,7 @@ func CreateMessage(data DistSessions) string {
 		"Fee:  %s\n",
 		"Date:  %s\n",
 		"Dose1:  *%d*\n",
-		"Age Limit:  %d\n",
+		"*Age Limit:  %d*\n",
 		"Vaccine:  *%s*\n",
 		"Dose2:  *%d*\n",
 		"Area:  %s\n",
@@ -199,6 +199,11 @@ func CreateMessage(data DistSessions) string {
 	var BuildSlot strings.Builder
 	name := strings.Split(data.Name, " ")
 	addr := strings.Split(data.Address, " ")
+	age := data.MinAgeLimit
+
+	if age == 45 {
+		BuildSlot.WriteString(fmt.Sprintf(msg[6], data.MinAgeLimit))
+	}
 
 	if len(name) > 2 {
 		BuildSlot.WriteString(fmt.Sprintf(msg[0], strings.Join(name[:len(name)/2], " ")))
@@ -216,9 +221,10 @@ func CreateMessage(data DistSessions) string {
 		BuildSlot.WriteString(fmt.Sprintf(msg[9], data.Address))
 	}
 
-	BuildSlot.WriteString(fmt.Sprintf(msg[1], data.Pincode))
 	BuildSlot.WriteString(fmt.Sprintf(msg[4], data.Date))
-	BuildSlot.WriteString(fmt.Sprintf(msg[6], data.MinAgeLimit))
+	if age == 18 {
+		BuildSlot.WriteString(fmt.Sprintf(msg[6], data.MinAgeLimit))
+	}
 
 	BuildSlot.WriteString("\n")
 	BuildSlot.WriteString(fmt.Sprintf(msg[7], data.Vaccine))
