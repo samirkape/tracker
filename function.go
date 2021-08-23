@@ -227,7 +227,6 @@ func CreateMessage(data DistSessions) string {
 	}
 
 	BuildSlot.WriteString("\n")
-	BuildSlot.WriteString(fmt.Sprintf(msg[7], data.Vaccine))
 	if data.FeeType != "Free" {
 		BuildSlot.WriteString(fmt.Sprintf(msg[3], data.Fee))
 	} else {
@@ -237,5 +236,6 @@ func CreateMessage(data DistSessions) string {
 	if data.AvailableCapacityDose2 > 1 {
 		BuildSlot.WriteString(fmt.Sprintf(msg[8], data.AvailableCapacityDose2))
 	}
+	BuildSlot.WriteString(fmt.Sprintf(msg[7], data.Vaccine))
 	return BuildSlot.String()
 }
