@@ -203,7 +203,6 @@ func CreateMessage(data DistSessions) string {
 
 	if age == 45 {
 		BuildSlot.WriteString(fmt.Sprintf(msg[6], data.MinAgeLimit))
-		BuildSlot.WriteString("\n")
 	}
 
 	if len(name) > 2 {
