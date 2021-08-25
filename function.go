@@ -211,6 +211,7 @@ func CreateMessage(data DistSessions) string {
 		BuildSlot.WriteString("\n\n")
 	} else {
 		BuildSlot.WriteString(fmt.Sprintf(msg[0], data.Name))
+		BuildSlot.WriteString("\n")
 	}
 
 	if len(addr) > int(2) {
