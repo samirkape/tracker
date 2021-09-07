@@ -83,7 +83,7 @@ func filterData(data SlotInfo, db *buntdb.DB) {
 					})
 				} else {
 					db.Update(func(tx *buntdb.Tx) error {
-						tx.Set(session.Name, "", &buntdb.SetOptions{Expires: true, TTL: time.Minute * MessageTimeout})
+						tx.Set(session.Name, "", &buntdb.SetOptions{Expires: true, TTL: time.Hour * MessageTimeout})
 						return nil
 					})
 				}
