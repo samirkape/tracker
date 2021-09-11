@@ -22,19 +22,20 @@ func init() {
 }
 
 const (
-	MYID           = -1001481708291
-	DEBUGID        = 1346530914
-	GROUPID        = -557832891
-	URL            = "https://cdn-api.co-vin.in/"
-	URLPATH        = "api/v2/appointment/sessions/public/findByPin"
-	DISTQUERY      = "district_id"
-	DISTID         = "391"
-	PINQUERY       = "pincode"
-	PINCODE        = "423601"
-	DATEQUERY      = "date"
-	HostAddress    = "8081"
-	WaitTime       = float64((time.Minute * 5) / 100)
-	MessageTimeout = 78
+	MYID               = -1001481708291
+	DEBUGID            = 1346530914
+	GROUPID            = -557832891
+	URL                = "https://cdn-api.co-vin.in/"
+	URLPATH            = "api/v2/appointment/sessions/public/findByPin"
+	DISTQUERY          = "district_id"
+	DISTID             = "391"
+	PINQUERY           = "pincode"
+	PINCODE            = "423601"
+	DATEQUERY          = "date"
+	HostAddress        = "8081"
+	WaitTime           = float64((time.Minute * 5) / 100)
+	MessageTimeout     = 12
+	PaidMessageTimeout = 78
 )
 
 const (
