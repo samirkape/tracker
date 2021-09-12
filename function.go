@@ -77,10 +77,12 @@ func filterData(data SlotInfo, db *buntdb.DB) {
 
 			if err == buntdb.ErrNotFound {
 				if session.FeeType == "Paid" {
-					db.Update(func(tx *buntdb.Tx) error {
-						tx.Set(session.Name, "", &buntdb.SetOptions{Expires: true, TTL: time.Hour * PaidMessageTimeout})
-						return nil
-					})
+					continue // no need to report paid vaccines
+
+					// db.Update(func(tx *buntdb.Tx) error {
+					// 	tx.Set(session.Name, "", &buntdb.SetOptions{Expires: true, TTL: time.Hour * PaidMessageTimeout})
+					// 	return nil
+					// })
 				} else {
 					db.Update(func(tx *buntdb.Tx) error {
 						tx.Set(session.Name, "", &buntdb.SetOptions{Expires: true, TTL: time.Hour * MessageTimeout})
