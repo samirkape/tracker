@@ -14,7 +14,7 @@ var Bot *tgbotapi.BotAPI
 
 // bot constructor
 func init() {
-	bot, err := getTBot()
+	bot, err := InitBotInstance()
 	Bot = bot
 	if err != nil {
 		fmt.Println("bot initialization failed")
