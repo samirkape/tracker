@@ -10,7 +10,7 @@ import (
 )
 
 // initialize and validate bot
-func getTBot() (*tgbotapi.BotAPI, error) {
+func InitBotInstance() (*tgbotapi.BotAPI, error) {
 	BotToken := os.Getenv("TOKEN")
 	if len(BotToken) == 0 {
 		return nil, errors.New("getTBot: could not find bot token")
