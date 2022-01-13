@@ -1,7 +1,7 @@
 package main
 
 import (
-	tracker "github.com/samirkape/tracker"
+	"github.com/samirkape/tracker"
 )
 
 func main() {
